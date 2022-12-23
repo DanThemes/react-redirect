@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ACTIONS } from "../context/UrlActions";
 import { useUrlContext } from "../context/UrlContext";
+import { generateShortUrl } from "../utils/generateShortUrl";
 
 const AddUrl = () => {
   const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
 
   const { state, dispatch } = useUrlContext();
 
@@ -14,11 +14,12 @@ const AddUrl = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!from || !to) return;
+    if (!from) return;
+
+    const to = generateShortUrl(from);
 
     dispatch({ type: ACTIONS.ADD_URL, payload: { from, to } });
     setFrom("");
-    setTo("");
     navigate("/");
   };
 
@@ -30,13 +31,6 @@ const AddUrl = () => {
           value={from}
           placeholder="From"
           onChange={(e) => setFrom(e.target.value)}
-        />
-        <br />
-        <input
-          type="text"
-          value={to}
-          placeholder="To"
-          onChange={(e) => setTo(e.target.value)}
         />
         <br />
         <button type="submit">Submit</button>
